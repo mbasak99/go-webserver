@@ -8,6 +8,8 @@ import (
 
 func main() {
 	// Start server on custom port address (if provided) default is port 3001.
+	// Side note: 0-1023 are restricted and reserved for services with root
+	// privileges.
 	addr := flag.String("addr", ":3001", "HTTP Network Address")
 
 	// Need to parse the command-line arg to actually read in if a user passed
