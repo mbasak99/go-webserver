@@ -7,6 +7,14 @@ import (
 )
 
 func main() {
+	// Start server on custom port address (if provided) default is port 3001.
+	addr := flag.String("addr", ":3001", "HTTP Network Address")
+
+	// Need to parse the command-line arg to actually read in if a user passed
+	// a value, and need to parse before it's used anywhere or it'll default
+	// to 3001.
+	flag.Parse()
+
 	mux := http.NewServeMux()
 
 	// Create a file server for the static files and also make sure
@@ -19,9 +27,6 @@ func main() {
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
-
-	// Start the server on custom port address (if provided) default is 3001
-	addr := flag.String("addr", ":3001", "HTTP Network Address")
 
 	log.Printf("Start server on http://localhost%s", *addr)
 	err := http.ListenAndServe(*addr, mux)
