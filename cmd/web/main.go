@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 )
@@ -19,8 +20,11 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
-	log.Print("Start server on localhost:3001")
-	err := http.ListenAndServe(":3001", mux)
+	// Start the server on custom port address (if provided) default is 3001
+	addr := flag.String("addr", ":3001", "HTTP Network Address")
+
+	log.Printf("Start server on http://localhost%s", *addr)
+	err := http.ListenAndServe(*addr, mux)
 
 	if err != nil {
 		log.Fatal(err)
