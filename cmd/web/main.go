@@ -7,6 +7,11 @@ import (
 	"os"
 )
 
+type application struct {
+	errLog  *log.Logger
+	infoLog *log.Logger
+}
+
 func main() {
 	// Start server on custom port address (if provided) default is port 3001.
 	// Side note: 0-1023 are restricted and reserved for services with root
@@ -26,6 +31,12 @@ func main() {
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+	// Init application struct to be used for handlers
+	app := application{
+		errLog:  errLog,
+		infoLog: infoLog,
+	}
+
 	mux := http.NewServeMux()
 
 	// Create a file server for the static files and also make sure
@@ -35,9 +46,9 @@ func main() {
 	// Need to strip the "/static" before looking for the files
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
+	mux.HandleFunc("/", app.home)
+	mux.HandleFunc("/snippet/view", app.snippetView)
+	mux.HandleFunc("/snippet/create", app.snippetCreate)
 
 	// By default http uses the standard logger, so I need to manually use mine
 	// Also set the port address and handler to use for the server, allowing me
